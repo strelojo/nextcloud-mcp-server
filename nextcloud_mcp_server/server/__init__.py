@@ -3,6 +3,7 @@ from collections.abc import Callable
 from mcp.server.mcpserver import MCPServer
 
 from nextcloud_mcp_server.capabilities import stamp_required_capability
+from nextcloud_mcp_server.readonly import enforce_readonly
 
 from .calendar import configure_calendar_tools
 from .collectives import configure_collectives_tools
@@ -73,6 +74,7 @@ def configure_app_tools(mcp: MCPServer, app_name: str) -> None:
     """
     before = {tool.name for tool in mcp._tool_manager.list_tools()}
     AVAILABLE_APPS[app_name](mcp)
+    enforce_readonly(mcp)
 
     capability = APP_CAPABILITY_KEY.get(app_name)
     if capability is None:

@@ -816,37 +816,6 @@ def configure_webdav_tools(mcp: MCPServer):
         return await client.webdav.create_directory(path)
 
     @mcp.tool(
-        title="Delete File or Directory",
-        annotations=ToolAnnotations(
-            destructive_hint=True,  # Permanently deletes data
-            idempotent_hint=True,  # Deleting deleted resource = same end state
-            open_world_hint=True,
-        ),
-    )
-    @require_scopes("files.write")
-    @instrument_tool
-    async def nc_webdav_delete_resource(path: str, ctx: Context):
-        """Delete a file or directory in NextCloud.
-
-        Raises ``ToolError`` when ``EXCLUDED_TAGS`` is configured and the
-        target path (or an ancestor folder) carries an excluded system tag.
-
-        Args:
-            path: Full path of the file or directory to delete
-
-        Returns:
-            Dict with status_code indicating result (404 if not found)
-        """
-        client = await get_client(ctx)
-
-        # Block deletion of excluded files/directories.
-        excluded = await get_excluded_file_paths(client.webdav)
-        if is_path_excluded(path, excluded):
-            raise ToolError(f"Access denied: {path!r} is tagged with an excluded tag")
-
-        return await client.webdav.delete_resource(path)
-
-    @mcp.tool(
         title="Move or Rename File",
         annotations=ToolAnnotations(
             idempotent_hint=False,  # Moving changes source and dest

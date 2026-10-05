@@ -20,6 +20,7 @@ from httpx import (
 )
 
 from nextcloud_mcp_server.client.dav_errors import enrich_dav_error
+from nextcloud_mcp_server.readonly import refuse_mutating_http
 from nextcloud_mcp_server.observability.metrics import (
     record_nextcloud_api_call,
     record_nextcloud_api_retry,
@@ -300,6 +301,7 @@ class BaseNextcloudClient(ABC):
         any body byte is yielded; a mid-body failure surfaces as the retryable
         transport error it already is.
         """
+        refuse_mutating_http(method)
         url = self._resolve_url(url)
         logger.debug("Making streaming %s request to %s", method, url)
 
@@ -377,6 +379,7 @@ class BaseNextcloudClient(ABC):
         Returns:
             Response object
         """
+        refuse_mutating_http(method)
         url = self._resolve_url(url)
         logger.debug("Making %s request to %s", method, url)
 

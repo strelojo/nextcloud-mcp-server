@@ -116,4 +116,8 @@ def get_stdio_mcp(enabled_apps: list[str] | None = None) -> MCPServer:
     # server is otherwise invisible.
     instrument_call_tool_outcomes(mcp)
 
+    from nextcloud_mcp_server.readonly import enforce_readonly
+
+    enforce_readonly(mcp)
+
     return mcp

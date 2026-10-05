@@ -6,6 +6,14 @@
 
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io/cbcoutinho/nextcloud--mcp--server-blue)](https://github.com/cbcoutinho/nextcloud-mcp-server/pkgs/container/nextcloud-mcp-server)
 
+> [!WARNING]
+> **Read-only fork.** This fork removes every tool that can change Nextcloud
+> (create, update, delete, move, copy, share, send, restore) and refuses the
+> HTTP methods `DELETE`, `PUT`, `PATCH`, `MOVE`, `COPY`, `MKCOL`, `PROPPATCH`,
+> `LOCK` and `UNLOCK` in the client before a request is sent. Reading, search
+> and download stay. `uvx nextcloud-mcp-server` still installs the upstream
+> package; point the client at this repository to get the read-only server.
+
 **A production-ready MCP server that connects AI assistants to your Nextcloud instance.**
 
 Enable Large Language Models like Claude, GPT, and Gemini to interact with your Nextcloud data through a secure API. Create notes, manage calendars, organize contacts, work with files, and more - all through natural language conversations.

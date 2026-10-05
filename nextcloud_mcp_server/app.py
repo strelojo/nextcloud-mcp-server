@@ -1904,6 +1904,10 @@ def get_app(transport: str = "streamable-http", enabled_apps: list[str] | None =
         logger.info("Registering Login Flow v2 auth tools")
         register_auth_tools(mcp)
 
+    from nextcloud_mcp_server.readonly import enforce_readonly
+
+    enforce_readonly(mcp)
+
     # Override list_tools to filter based on user's token scopes (OAuth mode only)
     if oauth_enabled:
         original_list_tools = mcp._tool_manager.list_tools

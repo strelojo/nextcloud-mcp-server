@@ -437,51 +437,10 @@ class WebDAVClient(BaseNextcloudClient):
         )
 
     async def delete_resource(self, path: str) -> Dict[str, Any]:
-        """Delete a resource (file or directory) via WebDAV DELETE."""
-        await self._ensure_principal_id()
-        # Ensure path ends with a slash if it's a directory
-        if not path.endswith("/"):
-            path_with_slash = f"{path}/"
-        else:
-            path_with_slash = path
-
-        webdav_path = self._webdav_path(path_with_slash)
-        logger.debug("Deleting WebDAV resource: %s", webdav_path)
-
-        headers = {"OCS-APIRequest": "true"}
-        try:
-            # First try a PROPFIND to verify resource exists
-            propfind_headers = {"Depth": "0", "OCS-APIRequest": "true"}
-            try:
-                propfind_resp = await self._make_request(
-                    "PROPFIND", webdav_path, headers=propfind_headers
-                )
-                logger.debug(
-                    "Resource exists check status: %s", propfind_resp.status_code
-                )
-            except HTTPStatusError as e:
-                if e.response.status_code == 404:
-                    logger.debug(
-                        "Resource '%s' doesn't exist, no deletion needed", path
-                    )
-                    return {"status_code": 404}
-                # For other errors, continue with deletion attempt
-
-            # Proceed with deletion
-            response = await self._make_request("DELETE", webdav_path, headers=headers)
-            logger.debug("Successfully deleted WebDAV resource '%s'", path)
-            return {"status_code": response.status_code}
-
-        except HTTPStatusError as e:
-            if e.response.status_code == 404:
-                logger.debug("Resource '%s' not found, no deletion needed", path)
-                return {"status_code": 404}
-            else:
-                logger.error("HTTP error deleting WebDAV resource '%s': %s", path, e)
-                raise e
-        except Exception as e:
-            logger.error("Unexpected error deleting WebDAV resource '%s': %s", path, e)
-            raise e
+        """Delete is disabled. Files and directories stay on the server."""
+        raise PermissionError(
+            f"Löschen ist deaktiviert. {path!r} bleibt auf dem Server."
+        )
 
     async def cleanup_old_attachment_directory(
         self, note_id: int, old_category: str
